@@ -3,17 +3,11 @@ from typing import Generator, List, Dict, Optional
 import numpy as np
 from ultralytics import YOLO
 
-"""
-iter_tracks(video_path, ...) yields (frame_bgr, tracks) for each frame.
-- frame_bgr: numpy array (BGR) for cv2.imshow()
-- tracks: list of {"id": int, "xywh": (x,y,w,h), "conf": float}
-Only class=person is kept.
-"""
 
 def iter_tracks(
     video_path: str,
     model_path: str = "yolov8n.pt",
-    device: Optional[str | int] = None,  # e.g., 0 for CUDA:0, or "cpu"
+    device: Optional[str | int] = None,  
     conf: float = 0.25,
     iou: float = 0.5,
 ) -> Generator[tuple[np.ndarray, List[Dict]], None, None]:

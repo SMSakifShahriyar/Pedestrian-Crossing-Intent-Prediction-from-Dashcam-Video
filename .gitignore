@@ -1,0 +1,36 @@
+# --- Python cache / build ---
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.dll
+
+# Virtual environments
+.env/
+.venv/
+venv/
+env/
+
+# Jupyter / misc
+.ipynb_checkpoints/
+
+# --- Project-specific large/binary files ---
+
+# Videos (outputs, samples)
+*.mp4
+
+# YOLO + other weights
+*.pt
+*.bin
+
+# PIE / other large model folders
+models/
+
+# Backup bytecode
+backup/__pycache__/
+
+# OS / editor junk
+.DS_Store
+Thumbs.db
+*.log

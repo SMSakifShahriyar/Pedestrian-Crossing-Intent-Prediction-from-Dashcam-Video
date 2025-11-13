@@ -4,7 +4,7 @@ from typing import Deque, Dict, Tuple, List
 import numpy as np
 
 class TrackBuffer:
-    """Keeps last N crops and box features per track ID."""
+
     def __init__(self, maxlen: int = 16):
         self.crops: Deque[np.ndarray] = deque(maxlen=maxlen)
         self.feats: Deque[Tuple[float, float, float, float]] = deque(maxlen=maxlen)
@@ -37,7 +37,7 @@ def crop_person(frame, xywh, out_size=224):
 
 
 def is_near_road(xywh, frame_h, margin_ratio=0.2):
-    """Very simple curb proxy: bottom of box in bottom 20% of frame."""
+
     x, y, w, h = xywh
     bottom = y + h
     return bottom >= (1.0 - margin_ratio) * frame_h

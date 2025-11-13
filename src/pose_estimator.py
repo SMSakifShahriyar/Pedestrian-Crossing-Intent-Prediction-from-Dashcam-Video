@@ -12,9 +12,7 @@ def xywh_to_xyxy(box_xywh):
 
 
 def iou_xyxy(a: np.ndarray, b: np.ndarray) -> float:
-    """
-    IoU between two boxes in [x1,y1,x2,y2].
-    """
+
     ax1, ay1, ax2, ay2 = a
     bx1, by1, bx2, by2 = b
 
@@ -67,14 +65,7 @@ def pose_crossing_likeness(keypoints: np.ndarray) -> float:
 
 
 class PoseEstimator:
-    """
-    Wrapper around YOLOv8 pose model.
 
-    For each frame returns a list of detections with:
-      - box_xyxy: [x1,y1,x2,y2]
-      - score:    detection confidence
-      - side:     crossing-likeness score in [0,1]
-    """
 
     def __init__(
         self,
@@ -103,7 +94,7 @@ class PoseEstimator:
         if r.boxes is None or r.keypoints is None:
             return []
 
-        # Move to CPU numpy arrays
+     
         boxes = r.boxes.xyxy.cpu().numpy()
         scores = r.boxes.conf.cpu().numpy()
         kpts = r.keypoints.xy.cpu().numpy() 

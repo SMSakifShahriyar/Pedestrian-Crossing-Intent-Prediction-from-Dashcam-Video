@@ -37,11 +37,10 @@ def main():
     ):
         frame = draw_tracks(frame, tracks)
 
-        # lazy init writer when we know frame size
+   
         if writer is None:
             h, w = frame.shape[:2]
-            # Try to keep original FPS if available; fall back to 25
-            # OpenCV can't easily read input FPS from the generator, so use 25 as safe default
+
             writer = cv2.VideoWriter(
                 out_path, cv2.VideoWriter_fourcc(*"mp4v"), 25.0, (w, h)
             )
@@ -50,7 +49,7 @@ def main():
 
         if not args.noshow:
             cv2.imshow("det+track (persons)", frame)
-            if cv2.waitKey(1) & 0xFF in (27, ord('q')):  # ESC or q exits early
+            if cv2.waitKey(1) & 0xFF in (27, ord('q')):  
                 break
 
         frames += 1

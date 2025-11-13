@@ -51,13 +51,7 @@ def heuristic_road_score(
     frame_w: int,
     lane_center_x: float,
 ) -> float:
-    """
-    Simple geometric 'on-road' score in [0,1].
-
-    High when:
-      - bbox bottom is lower in the frame (closer to car)
-      - bbox center is near the horizontal lane center.
-    """
+    
     x, y, w, h = xywh
     cx = x + 0.5 * w
     bottom_y = y + h
@@ -144,7 +138,7 @@ def main():
     )
     args = ap.parse_args()
 
-    # Input FPS (for writer + track age in frames)
+
     cap = cv2.VideoCapture(args.video)
     in_fps = cap.get(cv2.CAP_PROP_FPS)
     cap.release()
@@ -198,7 +192,6 @@ def main():
                 net_width=1024,
             )
 
-        # track bookkeeping
         for t in tracks:
             tid = t["id"]
             last_seen_frame[tid] = frames
@@ -216,7 +209,7 @@ def main():
                 last_pose_sideways.pop(tid, None)
                 track_state.pop(tid, None)
 
-        # update buffers
+
         for t in tracks:
             tid = t["id"]
             crop = crop_person(frame, t["xywh"], out_size=224)
@@ -229,13 +222,13 @@ def main():
         if args.seg_interval < 1:
             args.seg_interval = 1
 
-        # pose every N frames
+
         if tracks and (frames % args.pose_interval == 0):
             tid_to_side = pose_est.match_to_tracks(frame, tracks)
             for tid, side in tid_to_side.items():
                 last_pose_sideways[tid] = side
 
-        # DeepLab segmentation every seg_interval frames
+
         if frames % args.seg_interval == 0:
             last_labels = road_seg.infer_labels(frame)
         elif last_labels is None and tracks:
@@ -245,7 +238,7 @@ def main():
         if last_labels is not None and tracks:
             road_feats = road_seg.features_for_tracks(last_labels, tracks)
 
-        # ---- NEW: overlay road/sidewalk if requested ----
+ 
         if args.show_road_debug and last_labels is not None and road_seg is not None:
             frame = road_seg.debug_overlay(frame, last_labels, alpha=0.35)
 
@@ -296,7 +289,7 @@ def main():
                 )
                 score_hist[tid].append(p)
 
-                # ------------- adaptive CROSSING threshold -------------
+          
                 base_th = args.threshold
                 th = base_th
 
@@ -312,10 +305,7 @@ def main():
                 near = is_near_road(t["xywh"], H, margin_ratio=0.2)
                 effective_on_road = bool(rf["is_on_road"] or heur_score > 0.7)
 
-                # CROSSING if:
-                #  - intent stable above (possibly relaxed) threshold
-                #  - (near frame bottom OR clearly on-road)
-                #  - inside ego lane band
+
                 if stable_high and (near or effective_on_road) and inside_lane:
                     new_state = "CROSSING"
                 else:
@@ -340,7 +330,7 @@ def main():
 
                 frame = draw_intent(frame, t, p, alert=alert, state=new_state)
 
-        # HUD + output
+
         if frames % 10 == 0:
             elapsed = time.time() - t0
             if elapsed > 0:

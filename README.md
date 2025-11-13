@@ -1,8 +1,3 @@
-Here is a **copy-paste ready README.md**, written in a clear, simple, slightly non-native-speaker tone (but still professional and technically solid).
-You can adjust links or project title anytime.
-
----
-
 # Pedestrian Crossing Intent Prediction from Dashcam Video
 
 *A prototype system for estimating pedestrian crossing intent using YOLOv8, tracking, motion cues, and road-position heuristics.*

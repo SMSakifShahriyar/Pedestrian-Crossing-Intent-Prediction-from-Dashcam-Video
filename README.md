@@ -2,7 +2,7 @@
 
 *A prototype system for estimating pedestrian crossing intent using YOLOv8, tracking, motion cues, and road-position heuristics.*
 
-## 📌 Overview
+## Overview
 
 This project is a **dashcam-based pedestrian intent prediction system**.
 It detects and tracks pedestrians from video, analyzes their motion over time, and produces an **intent score (0–1)** with three interpretable states:
@@ -28,7 +28,7 @@ This is **not a final ADAS system**, but a functional prototype for research, de
 ---
 
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 dashcam-intent/
@@ -134,7 +134,7 @@ Add:
 
 ---
 
-## 🔬 Research Motivation
+## Motivation
 
 This project is part of my interest in **transportation engineering, pedestrian behavior modeling, and early-warning systems**.
 The goal is to explore how far we can go with:

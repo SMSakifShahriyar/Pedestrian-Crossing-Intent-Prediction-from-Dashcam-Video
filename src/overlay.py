@@ -34,7 +34,7 @@ def draw_intent(frame, track, p, alert=False, state=None):
     x, y, w, h = track["xywh"]
     x2, y2 = x + w, y + h
 
-    # Choose color based on state
+
     if state == "CROSSING":
         color = (0, 0, 255)        # red
     elif state == "APPROACHING":

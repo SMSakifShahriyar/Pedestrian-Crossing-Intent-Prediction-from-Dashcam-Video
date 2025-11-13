@@ -38,51 +38,30 @@ def iou_xyxy(a: np.ndarray, b: np.ndarray) -> float:
 
 
 def pose_crossing_likeness(keypoints: np.ndarray) -> float:
-    """
-    Heuristic 'crossing-likeness' score based on pose only.
 
-    Idea:
-      - When a person is FRONTAL (facing camera), the shoulder width
-        is large relative to the overall body width in the image.
-      - When a person is more SIDE-ON (profile), the shoulders are
-        more "stacked" in depth, so their projected horizontal distance
-        is smaller relative to the full body width.
-
-    We compute:
-        shoulder_width / body_width
-
-    Then map:
-        ratio high  -> frontal  -> low crossing score
-        ratio low   -> profile -> high crossing score
-
-    Returns:
-        score in [0,1], where:
-          0.0 ~ frontal
-          1.0 ~ more side-on/profile (more compatible with crossing).
-    """
     if keypoints is None or keypoints.shape[0] < 7:
-        # Not enough joints, stay neutral-ish
+       
         return 0.5
 
-    # COCO indices: 5 = left shoulder, 6 = right shoulder
+
     ls = keypoints[5]
     rs = keypoints[6]
 
-    # Shoulder horizontal distance
+    
     shoulder_w = abs(rs[0] - ls[0])
 
-    # Approximate body width from keypoints spread in X
+
     xs = keypoints[:, 0]
     body_w = float(xs.max() - xs.min())
     if body_w < 1e-3:
         return 0.5
 
     ratio = float(np.clip(shoulder_w / (body_w + 1e-6), 0.0, 1.0))
-    # High ratio -> frontal, low ratio -> more side-on
+
     frontal_score = ratio
     profile_score = 1.0 - frontal_score
 
-    # Slightly sharpen profile to emphasize clear side-on
+    
     crossing_score = float(np.clip(profile_score ** 1.5, 0.0, 1.0))
     return crossing_score
 
@@ -127,11 +106,11 @@ class PoseEstimator:
         # Move to CPU numpy arrays
         boxes = r.boxes.xyxy.cpu().numpy()
         scores = r.boxes.conf.cpu().numpy()
-        kpts = r.keypoints.xy.cpu().numpy()  # [N,17,2]
+        kpts = r.keypoints.xy.cpu().numpy() 
 
         dets: List[Dict[str, Any]] = []
         for i in range(boxes.shape[0]):
-            # 'side' now means "crossing-likeness" (profile-ish vs frontal)
+          
             side = pose_crossing_likeness(kpts[i])
             dets.append(
                 {
@@ -143,16 +122,7 @@ class PoseEstimator:
         return dets
 
     def match_to_tracks(self, frame, tracks: List[Dict[str, Any]]) -> Dict[int, float]:
-        """
-        For each current track, find best-matching pose detection by IoU.
 
-        Args:
-            frame: current BGR frame (numpy array).
-            tracks: list of track dicts with 'id' and 'xywh'.
-
-        Returns:
-            dict: track_id -> crossing-likeness score (0..1).
-        """
         if not tracks:
             return {}
 
@@ -168,10 +138,10 @@ class PoseEstimator:
             box_xywh = t["xywh"]
             tb = xywh_to_xyxy(box_xywh)
 
-            # IoU with all pose boxes
+    
             ious = np.array([iou_xyxy(tb, pb) for pb in pose_boxes], dtype=np.float32)
             j = int(np.argmax(ious))
             if ious[j] < 0.3:
-                continue  # no good match
+                continue  
             tid_to_side[tid] = float(pose_dets[j]["side"])
         return tid_to_side
